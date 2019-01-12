@@ -1,0 +1,65 @@
+﻿<Window x:Class="WinLook.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:winLook="clr-namespace:WinLook"
+        mc:Ignorable="d"
+        Title="WinLook" Height="450" Width="350" Topmost="True" d:DataContext="{d:DesignInstance winLook:MainWindowViewModel}">
+    <Window.Resources>
+        <SolidColorBrush x:Key="FlashingWindowBrush" Color="#FFFFFF80"/>
+        <Style x:Key="WindowsListBoxItemstyle" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Padding" Value="2,0,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding Flashing}" Value="true">
+                                <Setter Property="Background" Value="{DynamicResource FlashingWindowBrush}"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBox Grid.Row="0" Name="SearchTextBox" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+        <ListBox Grid.Row="1" Name="WindowsListBox" ItemsSource="{Binding Windows}" SelectedItem="{Binding SelectedWindow}" SelectedIndex="{Binding SelectedWindowIndex}" 
+                 ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                 ItemContainerStyle="{DynamicResource WindowsListBoxItemstyle}">
+            <ListBox.Resources>
+                <DataTemplate DataType="{x:Type winLook:WindowDataViewModel}">
+                    <UserControl MouseDoubleClick="ItemMouseDoubleClick" HorizontalAlignment="Stretch">
+                        <StackPanel CanVerticallyScroll="True" Orientation="Horizontal">
+                            <Image Width="16" Margin="3,0" Height="16" Source="{Binding Icon}"/>
+                            <TextBlock Text="{Binding Title, Mode=OneWay}" Width="2000"/>
+                        </StackPanel>
+                    </UserControl>
+                </DataTemplate>
+            </ListBox.Resources>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel Orientation="Vertical"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+    </Grid>
+</Window>

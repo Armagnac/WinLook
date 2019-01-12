@@ -1,0 +1,29 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:tb="http://www.hardcodet.net/taskbar"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:winLook="clr-namespace:WinLook"
+                    mc:Ignorable="d">
+    <ContextMenu x:Shared="false" x:Key="SysTrayMenu" d:DataContext="{d:DesignInstance winLook:NotifyIconViewModel}">
+        <MenuItem Header="Show" Command="{Binding ShowCommand}" />
+        <Separator />
+        <MenuItem Header="Run On Start-up" IsCheckable="True" IsChecked="{Binding RunOnStartUp}" />
+        <MenuItem Header="Sort By Usage" IsCheckable="True" IsChecked="{Binding SortByUsage}" />
+        <MenuItem Header="Close with shift+delete" IsCheckable="True" IsChecked="{Binding CloseWithShiftDelete}" />
+        <Separator />
+        <MenuItem Header="About" Command="{Binding AboutCommand}" />
+        <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
+    </ContextMenu>
+
+    <tb:TaskbarIcon x:Key="NotifyIcon"
+                    IconSource="Resources/WinLook.ico"
+                    d:DataContext="{d:DesignInstance winLook:NotifyIconViewModel}"
+                    ToolTipText="{Binding Version, StringFormat={}WinLook {0}}"
+                    LeftClickCommand="{Binding ShowCommand}"
+                    ContextMenu="{StaticResource SysTrayMenu}">
+        <tb:TaskbarIcon.DataContext>
+            <winLook:NotifyIconViewModel/>
+        </tb:TaskbarIcon.DataContext>
+    </tb:TaskbarIcon>
+</ResourceDictionary>
